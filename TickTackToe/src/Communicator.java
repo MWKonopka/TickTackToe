@@ -288,8 +288,8 @@ public void actionPerformed(ActionEvent e) {
 	{
 	fields[2][2].changeIcon(board.getPlayerMark());
 	try {
-		dos.write(fields[2][2].pos1);
-		dos.write(fields[2][2].pos2);
+		dos.writeInt(fields[2][2].pos1);
+		dos.writeInt(fields[2][2].pos2);
 	} catch (IOException e1) {
 		System.out.println("Nie udało się przesłać ruchu.");
 		e1.printStackTrace();
