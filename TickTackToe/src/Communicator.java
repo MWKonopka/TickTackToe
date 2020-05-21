@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.util.Scanner;
 
 
+
 public class Communicator implements Runnable{
 
 	private String ip;
@@ -85,17 +86,24 @@ public class Communicator implements Runnable{
 
 	@Override
 	public void run() {
+		Screen frame= new Screen();	
+		frame.setTitle("Screen");
+		frame.setSize(600, 400);
+		frame.setVisible(true);
 		Scanner scanner = new Scanner(System.in);
 		while(board.checkForWin() == 0)
 		{
 		board.printBoard();
 		if(board.getTurnState())
 		{
-			int r,c;
+			int r = 0;
+			int c = 0;
 			System.out.println("Podaj numer rzędu od 0 do 3:");
-			r = scanner.nextInt();
-			System.out.println("Podaj numer kolumny od 0 do 3:");
-			c = scanner.nextInt();	
+			//TRUAJ JEST PROBLEM Z TYM, ŻE THREAD NIE CZEKA NA WCIŚNIECIE PRZYCISKU
+			r = frame.r_out; //scanner.nextInt();
+			//System.out.println("Podaj numer kolumny od 0 do 3:");
+			c =frame.c_out;//scanner.nextInt();
+			frame.check = false;
 			board.changeBoard(r, c, board.getPlayerMark());
 			try {
 				dos.writeInt(r);
