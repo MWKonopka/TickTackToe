@@ -59,11 +59,11 @@ public class Board {
 			System.out.print("\n");
 		}
 	}
-	
-	public Boolean changeBoard(int row, int col, char mark)
+	//zminiłem z 3 na 2
+	public boolean changeBoard(int row, int col, char mark)
 	{
-		if(row >= 0 && row <= 3 &&
-		   col >= 0 && row <= 3 &&
+		if(row >= 0 && row <= 2 &&
+		   col >= 0 && row <= 2 &&
 		   board[row][col] == ' ')
 		{
 			board[row][col] = mark;

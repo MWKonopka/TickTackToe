@@ -68,6 +68,11 @@ public class Communicator extends JFrame implements Runnable{
 		 * 
 		 */
 		try {
+		    /*Scanner sc=new Scanner(System.in);  
+			System.out.println("Podaj numer ip");
+			ip = sc.nextLine(); 
+			System.out.println("POdaj numer portu:");
+			port = sc.nextInt();*/
 			socket = new Socket(ip, port);
 			dos = new DataOutputStream(socket.getOutputStream());
 			dis = new DataInputStream(socket.getInputStream());
@@ -111,23 +116,24 @@ public class Communicator extends JFrame implements Runnable{
 		}
 	}
 	
-	class FieldActionListener00 implements ActionListener{
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if(board.getTurnState())
-		{
-		fields[0][0].changeIcon(board.getPlayerMark());
-		try {
-			dos.writeInt(fields[0][0].pos1);
-			dos.writeInt(fields[0][0].pos2);
-		} catch (IOException e1) {
-			System.out.println("Nie udało się przesłać ruchu.");
-			e1.printStackTrace();
-		}
-		board.changeBoard(fields[0][0].pos1, fields[0][0].pos2, board.getPlayerMark());
-		board.setTurnState(false);
-		}
-	}		
+class FieldActionListener00 implements ActionListener{
+@Override
+public void actionPerformed(ActionEvent e) {
+	if(board.getTurnState())
+	{
+	fields[0][0].changeIcon(board.getPlayerMark());
+	try {
+		dos.writeInt(fields[0][0].pos1);
+		dos.writeInt(fields[0][0].pos2);
+	} catch (IOException e1) {
+		System.out.println("Nie udało się przesłać ruchu.");
+		e1.printStackTrace();
+	}
+	board.changeBoard(fields[0][0].pos1, fields[0][0].pos2, board.getPlayerMark());
+	fields[0][0].setEnabled(false);
+	board.setTurnState(false);
+	}
+}		
 };
 
 class FieldActionListener01 implements ActionListener{
@@ -144,6 +150,7 @@ public void actionPerformed(ActionEvent e) {
 		e1.printStackTrace();
 	}
 	board.changeBoard(fields[0][1].pos1, fields[0][1].pos2, board.getPlayerMark());
+	fields[0][1].setEnabled(false);
 	board.setTurnState(false);
 	}
 }		
@@ -163,6 +170,7 @@ public void actionPerformed(ActionEvent e) {
 		e1.printStackTrace();
 	}
 	board.changeBoard(fields[0][2].pos1, fields[0][2].pos2, board.getPlayerMark());
+	fields[0][2].setEnabled(false);
 	board.setTurnState(false);
 	}
 }		
@@ -182,6 +190,7 @@ public void actionPerformed(ActionEvent e) {
 		e1.printStackTrace();
 	}
 	board.changeBoard(fields[1][0].pos1, fields[1][0].pos2, board.getPlayerMark());
+	fields[1][0].setEnabled(false);
 	board.setTurnState(false);
 	}
 }		
@@ -201,6 +210,7 @@ public void actionPerformed(ActionEvent e) {
 		e1.printStackTrace();
 	}
 	board.changeBoard(fields[1][1].pos1, fields[1][1].pos2, board.getPlayerMark());
+	fields[1][1].setEnabled(false);
 	board.setTurnState(false);
 	}
 }		
@@ -220,6 +230,7 @@ public void actionPerformed(ActionEvent e) {
 		e1.printStackTrace();
 	}
 	board.changeBoard(fields[1][2].pos1, fields[1][2].pos2, board.getPlayerMark());
+	fields[1][2].setEnabled(false);
 	board.setTurnState(false);
 	}
 }		
@@ -239,6 +250,7 @@ public void actionPerformed(ActionEvent e) {
 		e1.printStackTrace();
 	}
 	board.changeBoard(fields[2][0].pos1, fields[2][0].pos2, board.getPlayerMark());
+	fields[2][0].setEnabled(false);
 	board.setTurnState(false);
 	}
 }		
@@ -258,6 +270,7 @@ public void actionPerformed(ActionEvent e) {
 		e1.printStackTrace();
 	}
 	board.changeBoard(fields[2][1].pos1, fields[2][1].pos2, board.getPlayerMark());
+	fields[2][1].setEnabled(false);
 	board.setTurnState(false);
 	}
 }		
@@ -277,6 +290,7 @@ public void actionPerformed(ActionEvent e) {
 		e1.printStackTrace();
 	}
 	board.changeBoard(fields[2][2].pos1, fields[2][2].pos2, board.getPlayerMark());
+	fields[2][2].setEnabled(false);
 	board.setTurnState(false);
 	}
 }		
@@ -286,9 +300,9 @@ public void actionPerformed(ActionEvent e) {
 	@Override
 	public void run() {
 		while(board.checkForWin() == 0)
-		{
+		{ //System.out.println("While");  //Z JAKIEGOS POWODU JAK TEN PRINT JEST ODKOMENTOWANY TO NIE ZAWSZIESZA SIĘ PO TRZECH RUCHACH
 		if(!board.getTurnState())
-		{
+		{ 
 			int r,c;
 			try {
 				System.out.println("Poczekaj. Drugi gracz wykonuje ruch.");
@@ -297,7 +311,10 @@ public void actionPerformed(ActionEvent e) {
 				c = dis.readInt();
 				board.changeBoard(r, c, board.getOpponentMark());
 				fields[r][c].changeIcon(board.getOpponentMark());
+				fields[r][c].setEnabled(false);
 				board.setTurnState(true);
+				
+				
 			} catch (IOException e) {
 				System.out.println("Nie otrzymano informacji o wykonanym ruchu");
 				e.printStackTrace();
@@ -306,6 +323,15 @@ public void actionPerformed(ActionEvent e) {
 		
 		}
 		board.printResult();
+		fields[0][0].setEnabled(false);
+		fields[0][1].setEnabled(false);
+		fields[0][2].setEnabled(false);
+		fields[1][0].setEnabled(false);
+		fields[1][1].setEnabled(false);
+		fields[1][2].setEnabled(false);
+		fields[2][0].setEnabled(false);
+		fields[2][1].setEnabled(false);
+		fields[2][2].setEnabled(false);
 	}
 
 }
