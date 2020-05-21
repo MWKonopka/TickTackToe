@@ -1,3 +1,6 @@
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -6,8 +9,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
-public class Communicator implements Runnable{
+
+public class Communicator extends JFrame implements Runnable{
 
 	private String ip;
 	private int port;
@@ -18,6 +24,8 @@ public class Communicator implements Runnable{
 	DataOutputStream dos;
 	DataInputStream dis;
 	Board board;
+	JPanel panel;
+	XOField fields[][];
 	
 	public Communicator()
 	{
@@ -26,7 +34,32 @@ public class Communicator implements Runnable{
 		requestAccepted = false;
 		connected = false;
 		
+		panel = new JPanel();
+		fields = new XOField[3][3];
+		setSize(400,400);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setResizable(false);
+		panel.setLayout(new GridLayout(3,3));
+			for(int i=0;i<3;i++)
+				for(int j=0; j<3; j++)
+				{
+					fields[i][j] = new XOField(i,j);
+					panel.add(fields[i][j]);
+				}
+		this.add(panel);
+		setVisible(true);
+		
 		initialConnection();
+		
+		fields[0][0].addActionListener(new FieldActionListener00());
+		fields[0][1].addActionListener(new FieldActionListener01());
+		fields[0][2].addActionListener(new FieldActionListener02());
+		fields[1][0].addActionListener(new FieldActionListener10());
+		fields[1][1].addActionListener(new FieldActionListener11());
+		fields[1][2].addActionListener(new FieldActionListener12());
+		fields[2][0].addActionListener(new FieldActionListener20());
+		fields[2][1].addActionListener(new FieldActionListener21());
+		fields[2][2].addActionListener(new FieldActionListener22());
 	}
 	
 	private void initialConnection() {
@@ -78,42 +111,192 @@ public class Communicator implements Runnable{
 		}
 	}
 	
-	public void play()
-	{
-
-	}
-
+	class FieldActionListener00 implements ActionListener{
 	@Override
-	public void run() {
-		Scanner scanner = new Scanner(System.in);
-		while(board.checkForWin() == 0)
-		{
-		board.printBoard();
+	public void actionPerformed(ActionEvent e) {
 		if(board.getTurnState())
 		{
-			int r,c;
-			System.out.println("Podaj numer rzędu od 0 do 3:");
-			r = scanner.nextInt();
-			System.out.println("Podaj numer kolumny od 0 do 3:");
-			c = scanner.nextInt();	
-			board.changeBoard(r, c, board.getPlayerMark());
-			try {
-				dos.writeInt(r);
-				dos.writeInt(c);
-				board.setTurnState(false);
-			} catch (IOException e) {
-				System.out.println("Nie udało się przesłać informacji o wykonanym ruchu");
-				e.printStackTrace();
-			}
+		fields[0][0].changeIcon(board.getPlayerMark());
+		try {
+			dos.writeInt(fields[0][0].pos1);
+			dos.writeInt(fields[0][0].pos2);
+		} catch (IOException e1) {
+			System.out.println("Nie udało się przesłać ruchu.");
+			e1.printStackTrace();
 		}
-		else
+		board.changeBoard(fields[0][0].pos1, fields[0][0].pos2, board.getPlayerMark());
+		board.setTurnState(false);
+		}
+	}		
+};
+
+class FieldActionListener01 implements ActionListener{
+@Override
+public void actionPerformed(ActionEvent e) {
+	if(board.getTurnState())
+	{
+	fields[0][1].changeIcon(board.getPlayerMark());
+	try {
+		dos.writeInt(fields[0][1].pos1);
+		dos.writeInt(fields[0][1].pos2);
+	} catch (IOException e1) {
+		System.out.println("Nie udało się przesłać ruchu.");
+		e1.printStackTrace();
+	}
+	board.changeBoard(fields[0][1].pos1, fields[0][1].pos2, board.getPlayerMark());
+	board.setTurnState(false);
+	}
+}		
+};
+
+class FieldActionListener02 implements ActionListener{
+@Override
+public void actionPerformed(ActionEvent e) {
+	if(board.getTurnState())
+	{
+	fields[0][2].changeIcon(board.getPlayerMark());
+	try {
+		dos.writeInt(fields[0][2].pos1);
+		dos.writeInt(fields[0][2].pos2);
+	} catch (IOException e1) {
+		System.out.println("Nie udało się przesłać ruchu.");
+		e1.printStackTrace();
+	}
+	board.changeBoard(fields[0][2].pos1, fields[0][2].pos2, board.getPlayerMark());
+	board.setTurnState(false);
+	}
+}		
+};
+
+class FieldActionListener10 implements ActionListener{
+@Override
+public void actionPerformed(ActionEvent e) {
+	if(board.getTurnState())
+	{
+	fields[1][0].changeIcon(board.getPlayerMark());
+	try {
+		dos.writeInt(fields[1][0].pos1);
+		dos.writeInt(fields[1][0].pos2);
+	} catch (IOException e1) {
+		System.out.println("Nie udało się przesłać ruchu.");
+		e1.printStackTrace();
+	}
+	board.changeBoard(fields[1][0].pos1, fields[1][0].pos2, board.getPlayerMark());
+	board.setTurnState(false);
+	}
+}		
+};
+
+class FieldActionListener11 implements ActionListener{
+@Override
+public void actionPerformed(ActionEvent e) {
+	if(board.getTurnState())
+	{
+	fields[1][1].changeIcon(board.getPlayerMark());
+	try {
+		dos.writeInt(fields[1][1].pos1);
+		dos.writeInt(fields[1][1].pos2);
+	} catch (IOException e1) {
+		System.out.println("Nie udało się przesłać ruchu.");
+		e1.printStackTrace();
+	}
+	board.changeBoard(fields[1][1].pos1, fields[1][1].pos2, board.getPlayerMark());
+	board.setTurnState(false);
+	}
+}		
+};
+
+class FieldActionListener12 implements ActionListener{
+@Override
+public void actionPerformed(ActionEvent e) {
+	if(board.getTurnState())
+	{
+	fields[1][2].changeIcon(board.getPlayerMark());
+	try {
+		dos.writeInt(fields[1][2].pos1);
+		dos.writeInt(fields[1][2].pos2);
+	} catch (IOException e1) {
+		System.out.println("Nie udało się przesłać ruchu.");
+		e1.printStackTrace();
+	}
+	board.changeBoard(fields[1][2].pos1, fields[1][2].pos2, board.getPlayerMark());
+	board.setTurnState(false);
+	}
+}		
+};
+
+class FieldActionListener20 implements ActionListener{
+@Override
+public void actionPerformed(ActionEvent e) {
+	if(board.getTurnState())
+	{
+	fields[2][0].changeIcon(board.getPlayerMark());
+	try {
+		dos.writeInt(fields[2][0].pos1);
+		dos.writeInt(fields[2][0].pos2);
+	} catch (IOException e1) {
+		System.out.println("Nie udało się przesłać ruchu.");
+		e1.printStackTrace();
+	}
+	board.changeBoard(fields[2][0].pos1, fields[2][0].pos2, board.getPlayerMark());
+	board.setTurnState(false);
+	}
+}		
+};
+
+class FieldActionListener21 implements ActionListener{
+@Override
+public void actionPerformed(ActionEvent e) {
+	if(board.getTurnState())
+	{
+	fields[2][1].changeIcon(board.getPlayerMark());
+	try {
+		dos.writeInt(fields[2][1].pos1);
+		dos.writeInt(fields[2][1].pos2);
+	} catch (IOException e1) {
+		System.out.println("Nie udało się przesłać ruchu.");
+		e1.printStackTrace();
+	}
+	board.changeBoard(fields[2][1].pos1, fields[2][1].pos2, board.getPlayerMark());
+	board.setTurnState(false);
+	}
+}		
+};
+
+class FieldActionListener22 implements ActionListener{
+@Override
+public void actionPerformed(ActionEvent e) {
+	if(board.getTurnState())
+	{
+	fields[2][2].changeIcon(board.getPlayerMark());
+	try {
+		dos.write(fields[2][2].pos1);
+		dos.write(fields[2][2].pos2);
+	} catch (IOException e1) {
+		System.out.println("Nie udało się przesłać ruchu.");
+		e1.printStackTrace();
+	}
+	board.changeBoard(fields[2][2].pos1, fields[2][2].pos2, board.getPlayerMark());
+	board.setTurnState(false);
+	}
+}		
+};
+
+	
+	@Override
+	public void run() {
+		while(board.checkForWin() == 0)
+		{
+		if(!board.getTurnState())
 		{
 			int r,c;
 			try {
 				System.out.println("Poczekaj. Drugi gracz wykonuje ruch.");
 				r = dis.readInt();
+				System.out.println(r);
 				c = dis.readInt();
 				board.changeBoard(r, c, board.getOpponentMark());
+				fields[r][c].changeIcon(board.getOpponentMark());
 				board.setTurnState(true);
 			} catch (IOException e) {
 				System.out.println("Nie otrzymano informacji o wykonanym ruchu");
@@ -121,9 +304,8 @@ public class Communicator implements Runnable{
 			}
 		}
 		
-	}
+		}
 		board.printResult();
-		scanner.close();
 	}
 
 }
