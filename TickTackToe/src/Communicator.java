@@ -10,6 +10,7 @@ import java.net.Socket;
 import java.util.Scanner;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 
@@ -26,6 +27,8 @@ public class Communicator extends JFrame implements Runnable{
 	Board board;
 	JPanel panel;
 	XOField fields[][];
+	
+	JPanel optionsPanel;
 	
 	public Communicator()
 	{
@@ -60,6 +63,8 @@ public class Communicator extends JFrame implements Runnable{
 		fields[2][0].addActionListener(new FieldActionListener20());
 		fields[2][1].addActionListener(new FieldActionListener21());
 		fields[2][2].addActionListener(new FieldActionListener22());
+		
+		optionsPanel = new JPanel();
 	}
 	
 	private void initialConnection() {
@@ -300,14 +305,13 @@ public void actionPerformed(ActionEvent e) {
 	@Override
 	public void run() {
 		while(board.checkForWin() == 0)
-		{ //System.out.println("While");  //Z JAKIEGOS POWODU JAK TEN PRINT JEST ODKOMENTOWANY TO NIE ZAWSZIESZA SIĘ PO TRZECH RUCHACH
+		{System.out.println(""); 
 		if(!board.getTurnState())
 		{ 
 			int r,c;
 			try {
 				System.out.println("Poczekaj. Drugi gracz wykonuje ruch.");
 				r = dis.readInt();
-				System.out.println(r);
 				c = dis.readInt();
 				board.changeBoard(r, c, board.getOpponentMark());
 				fields[r][c].changeIcon(board.getOpponentMark());
@@ -320,18 +324,33 @@ public void actionPerformed(ActionEvent e) {
 				e.printStackTrace();
 			}
 		}
-		
 		}
+		
+		
 		board.printResult();
-		fields[0][0].setEnabled(false);
-		fields[0][1].setEnabled(false);
-		fields[0][2].setEnabled(false);
-		fields[1][0].setEnabled(false);
-		fields[1][1].setEnabled(false);
-		fields[1][2].setEnabled(false);
-		fields[2][0].setEnabled(false);
-		fields[2][1].setEnabled(false);
-		fields[2][2].setEnabled(false);
+		int result = JOptionPane.showConfirmDialog(null, optionsPanel, 
+		        "Czy chcesz zagrać ponownie", JOptionPane.OK_CANCEL_OPTION);
+		   if (result == JOptionPane.OK_OPTION) {
+				if(connected == false)
+					board.setTurnState(true);
+				else
+					board.setTurnState(false);
+				
+				System.out.println("Ponowana gra. Turn state: " + board.getTurnState());
+				
+				for(int i=0; i<3; i++)
+					for(int j=0; j<3; j++)
+					{
+						fields[i][j].setEnabled(true);
+						fields[i][j].setIcon(null);
+					}
+				board.initializeBoard();
+				System.out.println("checkForWin: " + board.checkForWin());
+				this.run();
+		   }
+		   else
+			   System.exit(0);
+
 	}
 
 }
