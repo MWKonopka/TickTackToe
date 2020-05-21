@@ -32,7 +32,7 @@ public class Communicator extends JFrame implements Runnable{
 	
 	public Communicator()
 	{
-		ip = "localhost";
+		ip = "localhost"; //wartosci domyslne
 		port = 22222;
 		requestAccepted = false;
 		connected = false;
@@ -69,15 +69,15 @@ public class Communicator extends JFrame implements Runnable{
 	
 	private void initialConnection() {
 		/*
-		 * Chwilowo serwer zawsze zaczyna i ma O
+		 * Serwer zawsze zaczyna i ma O
 		 * 
 		 */
 		try {
-		    /*Scanner sc=new Scanner(System.in);  
+		    Scanner sc=new Scanner(System.in);  
 			System.out.println("Podaj numer ip");
 			ip = sc.nextLine(); 
 			System.out.println("POdaj numer portu:");
-			port = sc.nextInt();*/
+			port = sc.nextInt();
 			socket = new Socket(ip, port);
 			dos = new DataOutputStream(socket.getOutputStream());
 			dis = new DataInputStream(socket.getInputStream());
