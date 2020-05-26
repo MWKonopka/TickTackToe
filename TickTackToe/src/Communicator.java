@@ -73,11 +73,11 @@ public class Communicator extends JFrame implements Runnable{
 		 * 
 		 */
 		try {
-		    Scanner sc=new Scanner(System.in);  
+		    /*Scanner sc=new Scanner(System.in);  
 			System.out.println("Podaj numer ip");
 			ip = sc.nextLine(); 
 			System.out.println("POdaj numer portu:");
-			port = sc.nextInt();
+			port = sc.nextInt();*/
 			socket = new Socket(ip, port);
 			dos = new DataOutputStream(socket.getOutputStream());
 			dis = new DataInputStream(socket.getInputStream());
@@ -301,7 +301,7 @@ public void actionPerformed(ActionEvent e) {
 }		
 };
 
-	
+	boolean was_break = false;// Sprawdza czy runda sie zakończyła normalnie czy przez zerwanie połaczniea
 	@Override
 	public void run() {
 		while(board.checkForWin() == 0)
@@ -322,34 +322,62 @@ public void actionPerformed(ActionEvent e) {
 			} catch (IOException e) {
 				System.out.println("Nie otrzymano informacji o wykonanym ruchu");
 				e.printStackTrace();
+				was_break = true; //ustawia, że nastąpiło zerwanie
+				break;
 			}
 		}
 		}
 		
-		
-		board.printResult();
-		int result = JOptionPane.showConfirmDialog(null, optionsPanel, 
-		        "Czy chcesz zagrać ponownie", JOptionPane.OK_CANCEL_OPTION);
-		   if (result == JOptionPane.OK_OPTION) {
-				if(connected == false)
-					board.setTurnState(true);
-				else
-					board.setTurnState(false);
-				
-				System.out.println("Ponowana gra. Turn state: " + board.getTurnState());
-				
-				for(int i=0; i<3; i++)
-					for(int j=0; j<3; j++)
-					{
-						fields[i][j].setEnabled(true);
-						fields[i][j].setIcon(null);
-					}
-				board.initializeBoard();
-				System.out.println("checkForWin: " + board.checkForWin());
-				this.run();
-		   }
-		   else
-			   System.exit(0);
+		if(was_break == false) {//to wwszystko wrzuyciłęm w ifa by wyrzuacło ponowną rozgrywke tylko gdy gra zakonczyła się normalnie
+			board.printResult();
+			int result = JOptionPane.showConfirmDialog(null, optionsPanel, 
+			        "Czy chcesz zagrać ponownie", JOptionPane.OK_CANCEL_OPTION);
+			   if (result == JOptionPane.OK_OPTION) {
+					if(connected == false)
+						board.setTurnState(true);
+					else
+						board.setTurnState(false);
+					
+					System.out.println("Ponowana gra. Turn state: " + board.getTurnState());
+					
+					for(int i=0; i<3; i++)
+						for(int j=0; j<3; j++)
+						{
+							fields[i][j].setEnabled(true);
+							fields[i][j].setIcon(null);
+						}
+					board.initializeBoard();
+					System.out.println("checkForWin: " + board.checkForWin());
+					this.run();
+			   }
+			   else
+				   System.exit(0);	
+		}
+		else {
+			int result = JOptionPane.showConfirmDialog(null, optionsPanel, 
+			        "Drugi gracz się rozłączył, chcesz zagrać ponownie?", JOptionPane.OK_CANCEL_OPTION);
+			   if (result == JOptionPane.OK_OPTION) {
+					if(connected == false)
+						board.setTurnState(true);
+					else
+						board.setTurnState(false);
+					
+					System.out.println("Ponowana gra. Turn state: " + board.getTurnState());
+					
+					for(int i=0; i<3; i++)
+						for(int j=0; j<3; j++)
+						{
+							fields[i][j].setEnabled(true);
+							fields[i][j].setIcon(null);
+						}
+					board.initializeBoard();
+					System.out.println("checkForWin: " + board.checkForWin());
+					this.run();
+			   }
+			   else
+				   System.exit(0);	
+		}
+			  
 
 	}
 
