@@ -1,3 +1,4 @@
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,7 +22,8 @@ public class Communicator extends JFrame implements Runnable{
 	ServerSocket serverSocket;
 	Socket socket;
 	boolean requestAccepted;
-	boolean connected;
+	boolean connected; //true dla klienta
+	boolean isServer; //true dla serwera
 	DataOutputStream dos;
 	DataInputStream dis;
 	Board board;
@@ -36,6 +38,7 @@ public class Communicator extends JFrame implements Runnable{
 		port = 22222;
 		requestAccepted = false;
 		connected = false;
+		isServer = false;
 		
 		panel = new JPanel();
 		fields = new XOField[3][3];
@@ -65,6 +68,7 @@ public class Communicator extends JFrame implements Runnable{
 		fields[2][2].addActionListener(new FieldActionListener22());
 		
 		optionsPanel = new JPanel();
+		optionsPanel.setPreferredSize(new Dimension(350, 80));
 	}
 	
 	private void initialConnection() {
@@ -89,8 +93,12 @@ public class Communicator extends JFrame implements Runnable{
 		} catch (IOException e) {
 			System.out.println("Nie ma servera o: " + ip + ":" + port + " | Zakładam server");
 			initializeServer();
+			isServer = true;
 			while(!requestAccepted)
+			{
+				System.out.println("Czekam na klienta.");
 				listenForServerRequest();
+			}
 			
 		}
 		System.out.println("Połączono z serwerem.");
@@ -353,16 +361,21 @@ public void actionPerformed(ActionEvent e) {
 			   else
 				   System.exit(0);	
 		}
-		else {
+		if(was_break == true && isServer == true) {
 			int result = JOptionPane.showConfirmDialog(null, optionsPanel, 
-			        "Drugi gracz się rozłączył, chcesz zagrać ponownie?", JOptionPane.OK_CANCEL_OPTION);
+			        "Zerwano połączenie. Chcesz poczekać na nowego klienta?", JOptionPane.OK_CANCEL_OPTION);
 			   if (result == JOptionPane.OK_OPTION) {
 					if(connected == false)
+					{
 						board.setTurnState(true);
+						listenForServerRequest();
+					}
 					else
+					{
 						board.setTurnState(false);
+					}
 					
-					System.out.println("Ponowana gra. Turn state: " + board.getTurnState());
+					System.out.println("Nowa gra. Turn state: " + board.getTurnState());
 					
 					for(int i=0; i<3; i++)
 						for(int j=0; j<3; j++)
@@ -376,6 +389,10 @@ public void actionPerformed(ActionEvent e) {
 			   }
 			   else
 				   System.exit(0);	
+		}
+		if(was_break == true && isServer == false)
+		{
+		 System.out.println("Zerwano połączenie z serwerem.");
 		}
 			  
 
